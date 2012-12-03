@@ -7,8 +7,12 @@
 //
 
 #import "LMStartViewController.h"
+#import "LMLoginViewController.h"
 
 @interface LMStartViewController ()
+
+- (void)openSession;
+- (void)showLoginView;
 
 @end
 
@@ -23,8 +27,14 @@
 {
     [super viewDidAppear:animated];
     
+    if (FBSession.activeSession.state == FBSessionStateOpen)
+    {
+        return;
+    }
+    
     // See if we have a valid token for the current state.
-    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
+    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
+    {
         // To-do, show logged in view
         [self openSession];
     } else {
@@ -39,9 +49,9 @@
 {
     switch (state) {
         case FBSessionStateOpen:
-            //            if ([[topViewController modalViewController] isKindOfClass: LMLoginViewController class]]) {
-            //[self dismissViewControllerAnimated:YES completion:nil];
-            //            }
+            if ([self.presentedViewController isKindOfClass: [LMLoginViewController class]]) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
             
             break;
         case FBSessionStateClosed:
