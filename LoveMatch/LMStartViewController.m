@@ -7,8 +7,12 @@
 //
 
 #import "LMStartViewController.h"
+#import "LMLoginViewController.h"
 
 @interface LMStartViewController ()
+
+- (void)openSession;
+- (void)showLoginView;
 
 @end
 
@@ -41,6 +45,11 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
+    if (FBSession.activeSession.state == FBSessionStateOpen)
+    {
+        return;
+    }
     
     // See if we have a valid token for the current state.
     if (FBSession.activeSession.state == FBSessionStateOpen) {
