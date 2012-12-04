@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2844" systemVersion="12C60" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="1Rx-c1-jqz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2844" systemVersion="12C54" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="1Rx-c1-jqz">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1930"/>
     </dependencies>
@@ -46,10 +46,6 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggQ-Ao-gLY">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="151" id="6fa-XT-B5d"/>
-                                    <constraint firstAttribute="height" constant="125" id="snU-Iv-WV4"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="LoveMatch">
                                     <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -62,11 +58,33 @@
                                     <segue destination="96Y-SK-fRh" kind="modal" id="3wu-9z-bIC"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="85a-2W-jvD">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="125" id="NJB-UT-G8v"/>
+                                    <constraint firstAttribute="width" constant="151" id="k0w-OU-H3P"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="LoveMatch">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="startFBSearch:" destination="1Rx-c1-jqz" eventType="touchUpInside" id="Xsi-cH-w5L"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="85a-2W-jvD" firstAttribute="bottom" secondItem="ggQ-Ao-gLY" secondAttribute="bottom" type="default" id="2hH-oP-XQE"/>
+                            <constraint firstItem="85a-2W-jvD" firstAttribute="trailing" secondItem="ggQ-Ao-gLY" secondAttribute="trailing" type="default" id="6Rl-CB-cSi"/>
+                            <constraint firstItem="85a-2W-jvD" firstAttribute="leading" secondItem="ggQ-Ao-gLY" secondAttribute="leading" type="default" id="AjM-EM-VlF"/>
+                            <constraint firstItem="85a-2W-jvD" firstAttribute="top" secondItem="ggQ-Ao-gLY" secondAttribute="top" type="default" id="JtL-8N-MEy"/>
                             <constraint firstItem="ggQ-Ao-gLY" firstAttribute="centerX" secondItem="JED-5V-6tC" secondAttribute="centerX" type="default" id="Ndi-IX-8yS"/>
                             <constraint firstItem="ggQ-Ao-gLY" firstAttribute="top" secondItem="JED-5V-6tC" secondAttribute="top" constant="167" id="eyr-bh-0wa"/>
+                            <constraint firstItem="85a-2W-jvD" firstAttribute="baseline" secondItem="ggQ-Ao-gLY" secondAttribute="baseline" type="default" id="nBy-cC-YGo"/>
                         </constraints>
                     </view>
                     <connections>
@@ -107,20 +125,6 @@
             <point key="canvasLocation" x="541" y="-141"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="LMLoginViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LMLoginViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="loginButtonPressed:"/>
-            </relationships>
-        </class>
-        <class className="LMStartViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LMStartViewController.h"/>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

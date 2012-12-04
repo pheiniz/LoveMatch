@@ -29,11 +29,13 @@
 
 - (IBAction)loginButtonPressed:(id)sender
 {
+    
     [FBSession openActiveSessionWithReadPermissions:nil
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
                                       LMStartViewController *startViewController = (LMStartViewController *)self.presentingViewController;
                                       [startViewController sessionStateChanged:session state:state error:error];
+                                      
                                   }];
 }
 @end

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		938232C1166E0725000E888F /* Friend.m in Sources */ = {isa = PBXBuildFile; fileRef = 938232C0166E0725000E888F /* Friend.m */; };
+		938232C4166E0725000E888F /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 938232C3166E0725000E888F /* User.m */; };
 		D663ADF2166BFC2800EE7C64 /* LMLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D663ADF1166BFC2800EE7C64 /* LMLoginViewController.m */; };
 		D6F2F9A7166BAAED00601B25 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6F2F9A6166BAAED00601B25 /* UIKit.framework */; };
 		D6F2F9A9166BAAED00601B25 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6F2F9A8166BAAED00601B25 /* Foundation.framework */; };
@@ -46,6 +48,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		938232BF166E0725000E888F /* Friend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Friend.h; sourceTree = "<group>"; };
+		938232C0166E0725000E888F /* Friend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Friend.m; sourceTree = "<group>"; };
+		938232C2166E0725000E888F /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		938232C3166E0725000E888F /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		D663ADF0166BFC2800EE7C64 /* LMLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMLoginViewController.h; sourceTree = "<group>"; };
 		D663ADF1166BFC2800EE7C64 /* LMLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMLoginViewController.m; sourceTree = "<group>"; };
 		D6F2F9A2166BAAED00601B25 /* LoveMatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LoveMatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -110,6 +116,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		938232BD166E06F8000E888F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				938232C2166E0725000E888F /* User.h */,
+				938232C3166E0725000E888F /* User.m */,
+				938232BF166E0725000E888F /* Friend.h */,
+				938232C0166E0725000E888F /* Friend.m */,
+				D6F2F9C3166BAAED00601B25 /* LoveMatch.xcdatamodeld */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		D6F2F997166BAAED00601B25 = {
 			isa = PBXGroup;
 			children = (
@@ -150,6 +168,7 @@
 		D6F2F9AE166BAAED00601B25 /* LoveMatch */ = {
 			isa = PBXGroup;
 			children = (
+				938232BD166E06F8000E888F /* Model */,
 				D6F2F9FF166BD18A00601B25 /* LMStartViewController.h */,
 				D6F2FA00166BD18A00601B25 /* LMStartViewController.m */,
 				D663ADF0166BFC2800EE7C64 /* LMLoginViewController.h */,
@@ -157,7 +176,6 @@
 				D6F2F9B7166BAAED00601B25 /* LMAppDelegate.h */,
 				D6F2F9B8166BAAED00601B25 /* LMAppDelegate.m */,
 				D6F2F9C0166BAAED00601B25 /* MainStoryboard.storyboard */,
-				D6F2F9C3166BAAED00601B25 /* LoveMatch.xcdatamodeld */,
 				D6F2F9AF166BAAED00601B25 /* Supporting Files */,
 			);
 			path = LoveMatch;
@@ -314,6 +332,8 @@
 				D6F2F9C5166BAAED00601B25 /* LoveMatch.xcdatamodeld in Sources */,
 				D6F2FA02166BD18A00601B25 /* LMStartViewController.m in Sources */,
 				D663ADF2166BFC2800EE7C64 /* LMLoginViewController.m in Sources */,
+				938232C1166E0725000E888F /* Friend.m in Sources */,
+				938232C4166E0725000E888F /* User.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
