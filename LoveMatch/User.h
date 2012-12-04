@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSString * pictureURL;
 @property (nonatomic, retain) NSString * gender;
 @property (nonatomic, retain) NSString * firstName;
+@property (nonatomic, retain) NSString * uid;
 @property (nonatomic, retain) NSSet *friends;
 @end
 

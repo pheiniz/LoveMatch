@@ -17,11 +17,12 @@
         </attribute>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pictureURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="friends" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Friend" inverseName="user" inverseEntity="Friend" syncable="YES"/>
         <userInfo/>
     </entity>
     <elements>
-        <element name="User" positionX="268" positionY="189" width="128" height="133"/>
+        <element name="User" positionX="268" positionY="189" width="128" height="148"/>
         <element name="Friend" positionX="504" positionY="194" width="128" height="148"/>
     </elements>
 </model>

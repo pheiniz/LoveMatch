@@ -18,27 +18,13 @@
 
 @implementation LMStartViewController
 
+@synthesize managedObjectContext = __managedObjectContext;
+@synthesize managedObjectModel = __managedObjectModel;
+@synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [[FBRequest requestForMe] startWithCompletionHandler:
-     ^(FBRequestConnection *connection, NSDictionary<FBGraphUser> *user, NSError *error) {
-         if (!error) {
-             [[self currentUser] setFirstName:[user objectForKey:@"first_name"]];
-             [[self currentUser] setLastName:[user objectForKey:@"last_name"]];
-             [[self currentUser] setGender:[user objectForKey:@"gender"]];
-             
-             if ([self.currentUser.gender isEqualToString:@"male"])
-             {
-                 [[self currentUser] setInterestedIn:@"female"];
-             }else{
-                 [[self currentUser] setInterestedIn:@"male"];
-             }
-             
-             //self.userProfileImage.profileID = [user objectForKey:@"id"];
-         }
-     }];
     
 }
 
@@ -52,7 +38,8 @@
     }
     
     // See if we have a valid token for the current state.
-    if (FBSession.activeSession.state == FBSessionStateOpen) {
+    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
+    {
         // To-do, show logged in view
         [self openSession];
     } else {
@@ -67,9 +54,9 @@
 {
     switch (state) {
         case FBSessionStateOpen:
-            //            if ([[topViewController modalViewController] isKindOfClass: LMLoginViewController class]]) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-            //            }
+            if ([self.presentedViewController isKindOfClass: [LMLoginViewController class]]) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
             
             break;
         case FBSessionStateClosed:
@@ -94,6 +81,39 @@
                                   cancelButtonTitle:@"OK"
                                   otherButtonTitles:nil];
         [alertView show];
+    }
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
+    [request setEntity:entity];
+    NSArray *resultArray = [self.managedObjectContext executeFetchRequest:request error:nil];
+    
+    if (FBSession.activeSession.isOpen && [resultArray count] == 0 ) {
+        [[FBRequest requestForMe] startWithCompletionHandler:
+         ^(FBRequestConnection *connection, NSDictionary<FBGraphUser> *user, NSError *error) {
+             if (!error) {                 
+                 User *currentUser = [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:self.managedObjectContext];
+                 [currentUser setUid:[user objectForKey:@"id"]];
+                 [currentUser setFirstName:[user objectForKey:@"first_name"]];
+                 [currentUser setLastName:[user objectForKey:@"last_name"]];
+                 [currentUser setGender:[user objectForKey:@"gender"]];
+                 
+                 if ([currentUser.gender isEqualToString:@"male"])
+                 {
+                     [currentUser setInterestedIn:@"female"];
+                 }else{
+                     [currentUser setInterestedIn:@"male"];
+                 }
+                 
+                 //self.userProfileImage.profileID = [user objectForKey:@"id"];
+                 
+                 [self saveContext];
+                 
+                 [self setCurrentUser:currentUser];
+             }
+         }];
+    }else{
+        [self setCurrentUser:[resultArray objectAtIndex:0]];
     }
 }
 
@@ -191,6 +211,115 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Core Data stack
+
+- (void)saveContext
+{
+    NSError *error = nil;
+    
+    if (__managedObjectContext != nil)
+    {
+        if ([self.managedObjectContext hasChanges] && ![self.managedObjectContext save:&error])
+        {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+             */
+            NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+            if(detailedErrors != nil && [detailedErrors count] > 0) {
+                for(NSError* detailedError in detailedErrors) {
+                    NSLog(@"  DetailedError: %@", [detailedError userInfo]);
+                }
+            }
+            else {
+                NSLog(@"  %@", [error userInfo]);
+            }
+            abort();
+        }
+    }
+}
+
+- (void)deleteDatabase
+{
+    NSError *error;
+    NSPersistentStore *store = [self.persistentStoreCoordinator.persistentStores lastObject];
+    NSURL *storeURL = store.URL;
+    [self.persistentStoreCoordinator removePersistentStore:store error:&error];
+    [[NSFileManager defaultManager] removeItemAtPath:storeURL.path error:&error];
+    
+    
+    // Create new persistent store
+    if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error])
+    {
+        NSLog(@"Unresolved error %@, %@ while deleting and adding new database.", error, [error userInfo]);
+        abort();
+    }
+}
+
+/**
+ Returns the managed object context for the application.
+ If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
+ */
+- (NSManagedObjectContext *)managedObjectContext
+{
+    if (__managedObjectContext != nil)
+    {
+        return __managedObjectContext;
+    }
+    
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (coordinator != nil)
+    {
+        __managedObjectContext = [[NSManagedObjectContext alloc] init];
+        [__managedObjectContext setPersistentStoreCoordinator:coordinator];
+    }
+    return __managedObjectContext;
+}
+
+/**
+ Returns the managed object model for the application.
+ If the model doesn't already exist, it is created from the application's model.
+ */
+- (NSManagedObjectModel *)managedObjectModel
+{
+    if (__managedObjectModel != nil)
+    {
+        return __managedObjectModel;
+    }
+    //mom because no versioning. in case of arror try out momd
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"LoveMatch" withExtension:@"momd"];
+    
+    __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    return __managedObjectModel;
+}
+
+/**
+ Returns the persistent store coordinator for the application.
+ If the coordinator doesn't already exist, it is created and the application's store added to it.
+ */
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
+{
+    if (__persistentStoreCoordinator != nil)
+    {
+        return __persistentStoreCoordinator;
+    }
+    
+    NSURL *storeURL = [[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject] URLByAppendingPathComponent:@"lovematch.sqlite"];
+    
+    
+    NSError *error = nil;
+    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error])
+    {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return __persistentStoreCoordinator;
 }
 
 @end

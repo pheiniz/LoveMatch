@@ -17,6 +17,7 @@
 @dynamic pictureURL;
 @dynamic gender;
 @dynamic firstName;
+@dynamic uid;
 @dynamic friends;
 
 @end
