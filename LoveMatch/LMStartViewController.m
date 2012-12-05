@@ -8,6 +8,8 @@
 
 #import "LMStartViewController.h"
 #import "LMLoginViewController.h"
+#import "LMRatingsTableViewController.h"
+
 
 @interface LMStartViewController ()
 
@@ -83,6 +85,11 @@
         [alertView show];
     }
     
+    [self getUserData];
+}
+
+- (void)getUserData
+{
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
     [request setEntity:entity];
@@ -91,7 +98,7 @@
     if (FBSession.activeSession.isOpen && [resultArray count] == 0 ) {
         [[FBRequest requestForMe] startWithCompletionHandler:
          ^(FBRequestConnection *connection, NSDictionary<FBGraphUser> *user, NSError *error) {
-             if (!error) {                 
+             if (!error) {
                  User *currentUser = [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:self.managedObjectContext];
                  [currentUser setUid:[user objectForKey:@"id"]];
                  [currentUser setFirstName:[user objectForKey:@"first_name"]];
@@ -105,6 +112,7 @@
                      [currentUser setInterestedIn:@"male"];
                  }
                  
+                 [currentUser setPictureURL:@""];
                  //self.userProfileImage.profileID = [user objectForKey:@"id"];
                  
                  [self saveContext];
@@ -117,7 +125,7 @@
     }
 }
 
-- (void)startCalculationForFriendsWithGender:(NSString *) gender{
+- (void)startCalculationForFriendsWithGender:(NSString *)gender {
     NSLog(@"Start calculating ...");
     NSString *query = [NSString stringWithFormat:
                        @"{"
@@ -140,52 +148,64 @@
                                   NSLog(@"Error: %@", [error localizedDescription]);
                               } else {
                                   NSLog(@"Result: %@", result);
-                                  NSArray *friends = [[(NSArray *) [result objectForKey:@"data"] objectAtIndex:0] objectForKey:@"fql_result_set"];
-                                  NSLog(@"Friends: %d", [friends count]);
-                                  NSArray *likesOnStatus = [[(NSArray *) [result objectForKey:@"data"] objectAtIndex:2] objectForKey:@"fql_result_set"];
-                                  NSLog(@"Likes on user status: %d", [likesOnStatus count]);
-                                  NSArray *likesOnSamePost = [[(NSArray *) [result objectForKey:@"data"] objectAtIndex:1] objectForKey:@"fql_result_set"];
-                                  NSLog(@"Likes on same post: %d", [likesOnSamePost count]);
-                                  //[self getDataForFriends:friends];
+                                  
+                                  [self processFBData:[result objectForKey:@"data"]];
                               }
                           }];
 }
 
-- (void)getDataForFriends:(NSArray *) friends{
-    for (NSDictionary *friend in friends)
-    {
-        // Multi-query to fetch the active user's friends, limit to 25.
-        // The initial query is stored in reference named "friends".
-        // The second query picks up the "uid2" info from the first
-        // query and gets the friend details.
-        NSString *query = [NSString stringWithFormat: 
-        @"{"
-        @"'likes_on_same_status':'SELECT user_id, object_id FROM like WHERE user_id = %@ AND object_id IN (SELECT object_id FROM like WHERE user_id=me())',"
-        @"'likes_on_user_status':'SELECT user_id FROM like WHERE object_id IN (SELECT status_id FROM status WHERE uid=me())',"
-        @"}", [friend valueForKey:@"uid"]];
-        // Set up the query parameter
-        NSDictionary *queryParam = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    query, @"q", nil];
-        // Make the API request that uses FQL
-        [FBRequestConnection startWithGraphPath:@"/fql"
-                                     parameters:queryParam
-                                     HTTPMethod:@"GET"
-                              completionHandler:^(FBRequestConnection *connection,
-                                                  id result,
-                                                  NSError *error) {
-                                  if (error) {
-                                      NSLog(@"Error: %@", [error localizedDescription]);
-                                  } else {
-                                      //NSLog(@"Result: %@", result);
-                                      NSLog(@"Result: ");
-                                  }
-                              }];
+- (void)processFBData:(NSArray *)jsonData {
+    
+    NSArray *friends = [[jsonData objectAtIndex:0] objectForKey:@"fql_result_set"];
+    [self createFriendEntities:friends];
+    
+    [self calculateRatingForFriends];
+    
+    
+    NSArray *likesOnStatus = [[jsonData objectAtIndex:2] objectForKey:@"fql_result_set"];
+    NSLog(@"Likes on user status: %d", [likesOnStatus count]);
+    NSArray *likesOnSamePost = [[jsonData objectAtIndex:1] objectForKey:@"fql_result_set"];
+    NSLog(@"Likes on same post: %d", [likesOnSamePost count]);
+    
+    [self performSegueWithIdentifier:@"ShowRatingsTableView" sender:self];
+    
+}
+
+- (void)createFriendEntities:(NSArray *)friends {
+    for (NSDictionary* friendDict in friends) {
+        Friend *friend = [NSEntityDescription insertNewObjectForEntityForName:@"Friend" inManagedObjectContext:self.managedObjectContext];
+        [friend setUid:[NSString stringWithFormat:@"%@",[friendDict valueForKey:@"uid"]]];
+        [friend setFirstName:[friendDict valueForKey:@"first_name"]];
+        [friend setLastName:[friendDict valueForKey:@"last_name"]];
+        [friend setGender:[[self currentUser] interestedIn]];
+        [friend setPictureURL:[friendDict valueForKey:@"pic"]];
+        
+        //TODO: relationship_status als null wird nicht erkannt. überarbeiten!
+        if ([friendDict valueForKey:@"relationship_status"] == (id)[NSNull null]) {
+            [friend setRelationshipStatus:@"Single"];
+        }else{
+            [friend setRelationshipStatus:[friendDict valueForKey:@"relationship_status"]];
+        }
+        
+        [[self currentUser] addFriendsObject:friend];
     }
+    [self saveContext];
+    NSLog(@"Friends: %d", [friends count]);
+}
+
+- (void)calculateRatingForFriends {
+    
 }
 
 - (IBAction)startFBSearch:(id)sender {    
     
-    [self startCalculationForFriendsWithGender:[[self currentUser] interestedIn]];
+    if ([_currentUser.friends count] == 0)
+    {
+        [self startCalculationForFriendsWithGender:[[self currentUser] interestedIn]];
+    }else{
+        [self performSegueWithIdentifier:@"ShowRatingsTableView" sender:self];
+    }
+    
 
 }
 
@@ -211,6 +231,19 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"ShowRatingsTableView"])
+    {
+        LMRatingsTableViewController *ratingTableViewController = [segue destinationViewController];
+        
+        NSSet *friendsSet = _currentUser.friends;
+        NSSortDescriptor *ratingDescriptor = [[NSSortDescriptor alloc] initWithKey:@"rating" ascending:YES];
+        NSArray *friends = [[friendsSet allObjects]sortedArrayUsingDescriptors:[NSArray arrayWithObjects: ratingDescriptor, nil]];
+        [ratingTableViewController setFriends:friends];
+    }
 }
 
 #pragma mark - Core Data stack

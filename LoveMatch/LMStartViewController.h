@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "User.h"
+#import "Friend.h"
 
 @interface LMStartViewController : UIViewController
 
