@@ -131,7 +131,8 @@
                        @"{"
                        @"'all_friends_with_gender':'SELECT first_name, last_name, uid, pic, relationship_status FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND sex = \"%@\"',"
                        @"'likes_on_user_status':'SELECT user_id FROM like WHERE object_id IN (SELECT status_id FROM status WHERE uid=me()) AND  user_id IN (SELECT uid FROM #all_friends_with_gender)',"
-                       @"'likes_on_same_post':'SELECT user_id, object_id FROM like WHERE user_id IN (SELECT uid FROM #all_friends_with_gender) AND object_id IN (SELECT object_id FROM like WHERE user_id=me())',"
+                       @"'likes_on_same_post':'SELECT user_id FROM like WHERE user_id IN (SELECT uid FROM #all_friends_with_gender) AND object_id IN (SELECT object_id FROM like WHERE user_id=me())',"
+                       @"'direct_messages':'SELECT author_id FROM message WHERE thread_id IN (SELECT thread_id FROM thread WHERE folder_id = 0) AND author_id IN (SELECT uid FROM #all_friends_with_gender)',"
                        @"}", gender];
     
     // Set up the query parameter
@@ -159,13 +160,21 @@
     NSArray *friends = [[jsonData objectAtIndex:0] objectForKey:@"fql_result_set"];
     [self createFriendEntities:friends];
     
-    [self calculateRatingForFriends];
+    NSArray *directMessages = [[jsonData objectAtIndex:1] objectForKey:@"fql_result_set"];
+    NSLog(@"Direct Messages: %d", [directMessages count]);
+    
+    [self calculateRatingFor:directMessages withWeight:3];
+    
+    NSArray *likesOnUserStatus = [[jsonData objectAtIndex:3] objectForKey:@"fql_result_set"];
+    NSLog(@"Likes on user status: %d", [likesOnUserStatus count]);
+    
+    [self calculateRatingFor:likesOnUserStatus withWeight:2];
     
     
-    NSArray *likesOnStatus = [[jsonData objectAtIndex:2] objectForKey:@"fql_result_set"];
-    NSLog(@"Likes on user status: %d", [likesOnStatus count]);
-    NSArray *likesOnSamePost = [[jsonData objectAtIndex:1] objectForKey:@"fql_result_set"];
+    NSArray *likesOnSamePost = [[jsonData objectAtIndex:2] objectForKey:@"fql_result_set"];
     NSLog(@"Likes on same post: %d", [likesOnSamePost count]);
+    
+    [self calculateRatingFor:likesOnSamePost withWeight:1];
     
     [self performSegueWithIdentifier:@"ShowRatingsTableView" sender:self];
     
@@ -193,9 +202,28 @@
     NSLog(@"Friends: %d", [friends count]);
 }
 
-- (void)calculateRatingForFriends {
+- (void)calculateRatingFor:(NSArray *)users withWeight:(int)weight{
+    NSFetchRequest *request;
+    NSEntityDescription *entity;
+    NSPredicate *predicate;
+    NSArray *resultArray;
     
+    for (NSDictionary *uidDict in users) {
+        NSString *uid = [[uidDict allValues] objectAtIndex:0];
+        
+        request = [[NSFetchRequest alloc] init];
+        entity = [NSEntityDescription entityForName:@"Friend" inManagedObjectContext:self.managedObjectContext];
+        [request setEntity:entity];
+        predicate = [NSPredicate predicateWithFormat: @"uid == %@", uid];
+        [request setPredicate:predicate];
+        resultArray = [self.managedObjectContext executeFetchRequest:request error:nil];
+        
+        Friend *friend = [resultArray objectAtIndex:0];
+        friend.rating = [NSNumber numberWithInt:[friend.rating intValue] + weight];
+        [self saveContext];
+    }
 }
+
 
 - (IBAction)startFBSearch:(id)sender {    
     
@@ -211,7 +239,11 @@
 
 - (void)openSession
 {
-    [FBSession openActiveSessionWithReadPermissions:nil
+    
+    NSArray *permissions =
+    [NSArray arrayWithObjects:@"user_photos", @"friends_photos", @"read_stream", @"read_mailbox", nil];
+    
+    [FBSession openActiveSessionWithReadPermissions:permissions
                                        allowLoginUI:YES
                                   completionHandler:
      ^(FBSession *session,
@@ -240,7 +272,7 @@
         LMRatingsTableViewController *ratingTableViewController = [segue destinationViewController];
         
         NSSet *friendsSet = _currentUser.friends;
-        NSSortDescriptor *ratingDescriptor = [[NSSortDescriptor alloc] initWithKey:@"rating" ascending:YES];
+        NSSortDescriptor *ratingDescriptor = [[NSSortDescriptor alloc] initWithKey:@"rating" ascending:NO];
         NSArray *friends = [[friendsSet allObjects]sortedArrayUsingDescriptors:[NSArray arrayWithObjects: ratingDescriptor, nil]];
         [ratingTableViewController setFriends:friends];
     }

@@ -64,7 +64,7 @@
     Friend *friend = [_friends objectAtIndex:indexPath.row];
     
     [cell.nameLabel setText:[NSString stringWithFormat:@"%@ %@", friend.firstName, friend.lastName]];
-    [cell.ratingsLabel setText:[NSString stringWithFormat:@"%@%%", friend.rating]];
+    [cell.ratingsLabel setText:[NSString stringWithFormat:@"%@", friend.rating]];
     [cell.relationshipLabel setText:friend.relationshipStatus];
     [cell.pictureImageView setImageWithURL:[NSURL URLWithString:friend.pictureURL]];
     
