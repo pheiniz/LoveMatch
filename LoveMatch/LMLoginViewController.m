@@ -29,12 +29,14 @@
 
 - (IBAction)loginButtonPressed:(id)sender
 {
+    NSArray *permissions =
+    [NSArray arrayWithObjects:@"user_photos", @"friends_photos", @"read_stream", @"read_mailbox", @"user_relationships", @"friends_relationships", nil];
     
-    [FBSession openActiveSessionWithReadPermissions:nil
+    [FBSession openActiveSessionWithReadPermissions:permissions
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
-                                      LMStartViewController *startViewController = (LMStartViewController *)self.presentingViewController;
-                                      [startViewController sessionStateChanged:session state:state error:error];
+                                      
+                                      [self.startViewController sessionStateChanged:session state:state error:error];
                                       
                                   }];
 }

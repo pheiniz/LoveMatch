@@ -2,8 +2,8 @@
 //  User.m
 //  LoveMatch
 //
-//  Created by Paul Heiniz on 04.12.12.
-//  Copyright (c) 2012 nerdburgers. All rights reserved.
+//  Created by Paul Heiniz on 02.01.13.
+//  Copyright (c) 2013 nerdburgers. All rights reserved.
 //
 
 #import "User.h"
@@ -12,12 +12,13 @@
 
 @implementation User
 
+@dynamic firstName;
+@dynamic gender;
 @dynamic interestedIn;
 @dynamic lastName;
 @dynamic pictureURL;
-@dynamic gender;
-@dynamic firstName;
 @dynamic uid;
+@dynamic pictureIcon;
 @dynamic friends;
 
 @end

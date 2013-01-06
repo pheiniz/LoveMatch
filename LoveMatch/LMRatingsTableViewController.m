@@ -10,11 +10,15 @@
 
 @interface LMRatingsTableViewController ()
 
+@property (nonatomic, strong) UIButton *startViewButton;
 
 
 @end
 
 @implementation LMRatingsTableViewController
+
+static int startButtonHeight = 50;
+static int startButtonWidth = 50;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -28,18 +32,50 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    _startViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - startButtonWidth - 10,self.view.frame.size.height - startButtonHeight,startButtonWidth ,startButtonHeight)];
+    
+    // Configure your view here.
+    _startViewButton.backgroundColor = [UIColor colorWithRed:0.0 green:0.7 blue:0.8 alpha:0.75];
+    [_startViewButton addTarget:self
+                                action:@selector(presentStartView)
+                      forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:_startViewButton];
+
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if ([[LMDataConnector sharedInstance] currentUser])
+    {
+        return;
+    }
+    
+    LMStartViewController *startViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"StartView"];
+    [self presentViewController:startViewController animated:NO completion:nil];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGRect newFrame = _startViewButton.frame;
+    newFrame.origin.x = self.view.frame.size.width - startButtonWidth - 10;
+    newFrame.origin.y = self.tableView.contentOffset.y+(self.tableView.frame.size.height-startButtonHeight);
+    _startViewButton.frame = newFrame;
+}
+
+- (void)presentStartView
+{
+    [self performSegueWithIdentifier:@"ShowStartView" sender:self];
 }
 
 #pragma mark - Table view data source
@@ -65,8 +101,19 @@
     
     [cell.nameLabel setText:[NSString stringWithFormat:@"%@ %@", friend.firstName, friend.lastName]];
     [cell.ratingsLabel setText:[NSString stringWithFormat:@"%@", friend.rating]];
+    
+    if (![friend.relationshipStatus isEqualToString:@"Single"]){
+        cell.relationshipIcon.hidden = NO;
+    }else{
+        cell.relationshipIcon.hidden = YES;
+    }
     [cell.relationshipLabel setText:friend.relationshipStatus];
     [cell.pictureImageView setImageWithURL:[NSURL URLWithString:friend.pictureURL]];
+    [cell.cellBackground setBackgroundColor: [UIColor colorWithRed:(255.0 - friend.rating.floatValue)/255.0 green:friend.rating.floatValue/255.0 blue:0.0/255.0 alpha:1.0]];
+    [[cell.cellBackground layer] setBorderWidth:3];
+    
+    
+    
     
     return cell;
 }
@@ -94,21 +141,44 @@
 }
 */
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
+//// Override to support rearranging the table view.
+//- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+//{
+//}
 
-/*
-// Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the item to be re-orderable.
+    if (indexPath.row == 0) // Don't move the first row
+        return NO;
+    
     return YES;
 }
-*/
+
+- (void)tableView:(UITableView *)tableView
+		 moveCell:(UITableViewCell *)cell
+	fromIndexPath:(NSIndexPath *)fromIndexPath
+	  toIndexPath:(NSIndexPath *)toIndexPath {
+	Friend *friendToMove = [self.friends objectAtIndex:fromIndexPath.row];
+	[_friends removeObjectAtIndex:fromIndexPath.row];
+	[_friends insertObject:friendToMove atIndex:toIndexPath.row];
+}
+
+- (void)tableView:(UITableView *)tableView
+	 exchangeCell:(UITableViewCell *)cell1 atIndexPath:(NSIndexPath *)indexPath1
+		 withCell:(UITableViewCell *)cell2 atIndexPath:(NSIndexPath *)indexPath2 {
+//	NSMutableArray *sectionArray1 = [self.sections objectAtIndex:indexPath1.section];
+//	NSMutableArray *sectionArray2 = [self.sections objectAtIndex:indexPath2.section];
+//	
+//	Friend *string1 = [[[sectionArray1 objectAtIndex:indexPath1.row] retain] autorelease];
+//	NSString *string2 = [[[sectionArray2 objectAtIndex:indexPath2.row] retain] autorelease];
+//	
+//	[sectionArray1 replaceObjectAtIndex:indexPath1.row withObject:string2];
+//	[sectionArray2 replaceObjectAtIndex:indexPath2.row withObject:string1];
+//	
+//	cell1.textLabel.text = string2;
+//	cell2.textLabel.text = string1;
+}
+
 
 #pragma mark - Table view delegate
 
@@ -123,4 +193,8 @@
      */
 }
 
+- (IBAction)test:(id)sender {
+    [self.tableView moveRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+						   toIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
+}
 @end

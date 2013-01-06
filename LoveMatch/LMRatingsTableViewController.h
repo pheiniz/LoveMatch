@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "LMFriendCell.h"
 #import "Friend.h"
 #import "UIImageView+AFNetworking.h"
+#import "UITableView+ExtendedAnimations.h"
+#import "LMDataConnector.h"
 
 @interface LMRatingsTableViewController : UITableViewController
 
-@property (nonatomic, strong) NSArray *friends;
+@property (nonatomic, strong) NSMutableArray *friends;
 
 @end

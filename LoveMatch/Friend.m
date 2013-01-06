@@ -2,7 +2,7 @@
 //  Friend.m
 //  LoveMatch
 //
-//  Created by Paul Heiniz on 05.12.12.
+//  Created by Paul Heiniz on 29.12.12.
 //  Copyright (c) 2012 nerdburgers. All rights reserved.
 //
 
@@ -12,13 +12,14 @@
 
 @implementation Friend
 
+@dynamic firstName;
 @dynamic gender;
 @dynamic lastName;
-@dynamic firstName;
+@dynamic pictureURL;
+@dynamic rating;
 @dynamic relationshipStatus;
 @dynamic uid;
-@dynamic rating;
-@dynamic pictureURL;
+@dynamic isFamilyMember;
 @dynamic user;
 
 @end
