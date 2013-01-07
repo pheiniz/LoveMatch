@@ -206,7 +206,7 @@ static LMDataConnector *sharedInstance = nil;
         [friend setFirstName:[friendDict valueForKey:@"first_name"]];
         [friend setLastName:[friendDict valueForKey:@"last_name"]];
         [friend setGender:[friendDict valueForKey:@"sex"]];
-        [friend setPictureURL:[friendDict valueForKey:@"pic"]];
+        [friend setPictureURL:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=200&height=200", friend.uid]];
         
         
         if ([friendDict valueForKey:@"relationship_status"] == (id)[NSNull null]) {

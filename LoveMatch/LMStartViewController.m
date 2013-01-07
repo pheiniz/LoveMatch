@@ -177,6 +177,7 @@
 	[_hud hideAfter:2.0];
     
     [FBSession.activeSession close];
+    [[LMDataConnector sharedInstance] deleteDatabase];
     [self performSelector:@selector(showLoginView) withObject:nil afterDelay:3.0];
 }
 
@@ -201,6 +202,7 @@
     
     [ratingTableViewController setFriends:[NSMutableArray arrayWithArray:[[LMDataConnector sharedInstance] getFriendsForGender:self.friendsGender]]];
     [ratingTableViewController.tableView reloadData];
+    [ratingTableViewController changeGenderTo:self.friendsGender];
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -219,15 +221,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"ShowRatingsTableView"])
-    {
-        LMRatingsTableViewController *ratingTableViewController = (LMRatingsTableViewController *)[self presentingViewController];
-            
-            
-
-        [ratingTableViewController setFriends:[NSMutableArray arrayWithArray:[[LMDataConnector sharedInstance] getFriendsForGender:self.friendsGender]]];
-        
-    }else if ([[segue identifier] isEqualToString:@"ShowLoginView"])
+    if ([[segue identifier] isEqualToString:@"ShowLoginView"])
     {
         LMLoginViewController *loginViewController = [segue destinationViewController];
         [loginViewController setStartViewController:self];

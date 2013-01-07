@@ -18,4 +18,6 @@
 
 @property (nonatomic, strong) NSMutableArray *friends;
 
+- (void)changeGenderTo:(NSString *)gender;
+
 @end

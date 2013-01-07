@@ -11,6 +11,7 @@
 @interface LMRatingsTableViewController ()
 
 @property (nonatomic, strong) UIButton *startViewButton;
+@property (nonatomic, strong) NSString *gender;
 
 
 @end
@@ -33,6 +34,8 @@ static int startButtonWidth = 50;
 {
     [super viewDidLoad];
     
+    UIImageView *boxBackView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background.jpeg"]];
+    [self.tableView setBackgroundView:boxBackView];
 
     _startViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - startButtonWidth - 10,self.view.frame.size.height - startButtonHeight,startButtonWidth ,startButtonHeight)];
     
@@ -78,6 +81,13 @@ static int startButtonWidth = 50;
     [self performSegueWithIdentifier:@"ShowStartView" sender:self];
 }
 
+- (void)changeGenderTo:(NSString *)gender{
+    if (![gender isEqualToString:self.gender]) {
+        [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+        self.gender = gender;
+    }
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -107,7 +117,6 @@ static int startButtonWidth = 50;
     }else{
         cell.relationshipIcon.hidden = YES;
     }
-    [cell.relationshipLabel setText:friend.relationshipStatus];
     [cell.pictureImageView setImageWithURL:[NSURL URLWithString:friend.pictureURL]];
     [cell.cellBackground setBackgroundColor: [UIColor colorWithRed:(255.0 - friend.rating.floatValue)/255.0 green:friend.rating.floatValue/255.0 blue:0.0/255.0 alpha:1.0]];
     [[cell.cellBackground layer] setBorderWidth:3];

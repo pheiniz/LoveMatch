@@ -13,7 +13,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *pictureImageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *ratingsLabel;
-@property (weak, nonatomic) IBOutlet UILabel *relationshipLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *cellBackground;
 @property (weak, nonatomic) IBOutlet UIImageView *heartRating;
 @property (weak, nonatomic) IBOutlet UIImageView *relationshipIcon;

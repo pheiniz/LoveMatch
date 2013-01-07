@@ -286,7 +286,7 @@ We promise!</string>
                                                 <constraint firstAttribute="width" constant="108" id="ayA-iq-cmh"/>
                                             </constraints>
                                         </imageView>
-                                        <imageView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="top" translatesAutoresizingMaskIntoConstraints="NO" id="UZ3-HN-Gzi">
+                                        <imageView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="UZ3-HN-Gzi">
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="100" id="ERU-pH-Muv"/>
                                                 <constraint firstAttribute="width" constant="100" id="ou4-Zg-yeh"/>
@@ -318,15 +318,15 @@ We promise!</string>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="UZ3-HN-Gzi" firstAttribute="centerY" secondItem="gk0-aZ-LJd" secondAttribute="centerY" type="default" id="1Wn-xo-s3I"/>
-                                    <constraint firstItem="vFc-gl-q9p" firstAttribute="leading" secondItem="Moo-Ln-qGu" secondAttribute="leading" constant="134" id="5Gm-aj-GT6"/>
+                                    <constraint firstAttribute="trailing" secondItem="vFc-gl-q9p" secondAttribute="trailing" constant="20" type="default" id="42P-CL-kjg"/>
                                     <constraint firstAttribute="trailing" secondItem="tqK-vP-ZNA" secondAttribute="trailing" constant="61" id="9hg-dQ-xcV"/>
                                     <constraint firstItem="UZ3-HN-Gzi" firstAttribute="centerX" secondItem="gk0-aZ-LJd" secondAttribute="centerX" type="default" id="E6t-NA-xWh"/>
-                                    <constraint firstItem="vFc-gl-q9p" firstAttribute="top" secondItem="Fe0-n1-Xt9" secondAttribute="top" type="default" id="QjT-I9-sAh"/>
+                                    <constraint firstItem="vFc-gl-q9p" firstAttribute="top" secondItem="Moo-Ln-qGu" secondAttribute="top" constant="20" type="default" id="GFE-9O-ZUY"/>
                                     <constraint firstItem="tqK-vP-ZNA" firstAttribute="centerY" secondItem="h1x-s4-4tm" secondAttribute="centerY" type="default" id="UDT-SE-xi6"/>
                                     <constraint firstItem="gk0-aZ-LJd" firstAttribute="top" secondItem="Moo-Ln-qGu" secondAttribute="top" constant="6" id="esJ-kp-igD"/>
                                     <constraint firstItem="Fe0-n1-Xt9" firstAttribute="top" secondItem="Moo-Ln-qGu" secondAttribute="top" constant="12" id="fUf-6Q-3Cq"/>
-                                    <constraint firstItem="h1x-s4-4tm" firstAttribute="trailing" secondItem="vFc-gl-q9p" secondAttribute="trailing" type="default" id="i8N-G4-6Bh"/>
                                     <constraint firstItem="Fe0-n1-Xt9" firstAttribute="leading" secondItem="Moo-Ln-qGu" secondAttribute="leading" constant="-8" id="iPY-hH-urK"/>
+                                    <constraint firstAttribute="trailing" secondItem="ZyN-I7-qAc" secondAttribute="trailing" constant="6" id="mhJ-Gb-bfi"/>
                                     <constraint firstItem="h1x-s4-4tm" firstAttribute="centerX" secondItem="ZyN-I7-qAc" secondAttribute="centerX" type="default" id="ncX-f5-r4m"/>
                                     <constraint firstItem="gk0-aZ-LJd" firstAttribute="bottom" secondItem="ZyN-I7-qAc" secondAttribute="bottom" type="default" id="ovk-1z-eBL"/>
                                     <constraint firstItem="gk0-aZ-LJd" firstAttribute="leading" secondItem="Moo-Ln-qGu" secondAttribute="leading" constant="5" id="sax-BE-UK0"/>
@@ -367,43 +367,6 @@ We promise!</string>
         <image name="malefemale.png" width="117" height="90"/>
         <image name="relationship_icon.png" width="42" height="42"/>
     </resources>
-    <classes>
-        <class className="LMFriendCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LMFriendCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="cellBackground" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="heartRating" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="nameLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="pictureImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="ratingsLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="relationshipIcon" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="relationshipLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="LMLoginViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LMLoginViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="loginButtonPressed:"/>
-            </relationships>
-        </class>
-        <class className="LMRatingsTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LMRatingsTableViewController.h"/>
-        </class>
-        <class className="LMStartViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LMStartViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="logout:"/>
-                <relationship kind="action" name="startFBSearchForAll:"/>
-                <relationship kind="action" name="startFBSearchForFemale:"/>
-                <relationship kind="action" name="startFBSearchForMale:"/>
-                <relationship kind="action" name="statsForUser:"/>
-                <relationship kind="outlet" name="statsForUserButton" candidateClass="UIButton"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

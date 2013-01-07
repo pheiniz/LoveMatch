@@ -17,5 +17,6 @@
 
 - (void)calculateDataForView:(LMStartViewController *) viewController;
 - (NSArray *)getFriendsForGender:(NSString *) gender;
+- (void)deleteDatabase;
 
 @end
