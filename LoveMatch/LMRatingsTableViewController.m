@@ -34,7 +34,7 @@ static int startButtonWidth = 50;
 {
     [super viewDidLoad];
     
-    UIImageView *boxBackView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background.jpeg"]];
+    UIImageView *boxBackView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background.png"]];
     [self.tableView setBackgroundView:boxBackView];
 
     _startViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - startButtonWidth - 10,self.view.frame.size.height - startButtonHeight,startButtonWidth ,startButtonHeight)];
@@ -53,13 +53,11 @@ static int startButtonWidth = 50;
 {
     [super viewDidAppear:animated];
     
-    if ([[LMDataConnector sharedInstance] currentUser])
+    if (![[LMDataConnector sharedInstance] getCurrentUser] || !self.gender)
     {
-        return;
+        LMStartViewController *startViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"StartView"];
+        [self presentViewController:startViewController animated:NO completion:nil];
     }
-    
-    LMStartViewController *startViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"StartView"];
-    [self presentViewController:startViewController animated:NO completion:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -105,9 +103,17 @@ static int startButtonWidth = 50;
 - (LMFriendCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"FriendCell";
+    int position = indexPath.row;
     LMFriendCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    Friend *friend = [_friends objectAtIndex:indexPath.row];
+    Friend *friend = [_friends objectAtIndex:position];
+    
+    [cell.positionLabel setText:[NSString stringWithFormat:@"%i", position + 1]];
+    if (position == 0){
+        [cell.positionImageView setImage:[UIImage imageNamed:@"circle_golden"]];
+    }else{
+        [cell.positionImageView setImage:[UIImage imageNamed:@"circle_blue"]];
+    }
     
     [cell.nameLabel setText:[NSString stringWithFormat:@"%@ %@", friend.firstName, friend.lastName]];
     [cell.ratingsLabel setText:[NSString stringWithFormat:@"%@", friend.rating]];
@@ -119,6 +125,7 @@ static int startButtonWidth = 50;
     }
     [cell.pictureImageView setImageWithURL:[NSURL URLWithString:friend.pictureURL]];
     [cell.cellBackground setBackgroundColor: [UIColor colorWithRed:(255.0 - friend.rating.floatValue)/255.0 green:friend.rating.floatValue/255.0 blue:0.0/255.0 alpha:1.0]];
+    //[cell.cellBackground setBackgroundColor: [UIColor colorWithRed:(float)indexPath.row/255.0 green:(float)(255-indexPath.row)/255.0 blue:0.0/255.0 alpha:1.0]];
     [[cell.cellBackground layer] setBorderWidth:3];
     
     

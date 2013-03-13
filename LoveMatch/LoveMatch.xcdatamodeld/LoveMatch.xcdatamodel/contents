@@ -18,6 +18,11 @@
             <userInfo/>
         </attribute>
         <attribute name="lastName" attributeType="String" syncable="YES"/>
+        <attribute name="numberDirectMessages" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberFamilyMembers" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberLikesOnStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberOfTagedFriends" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberOfTagedOnFriendsPictures" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="pictureIcon" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="pictureURL" attributeType="String" syncable="YES"/>
         <attribute name="uid" attributeType="String" syncable="YES"/>
@@ -26,6 +31,6 @@
     </entity>
     <elements>
         <element name="Friend" positionX="504" positionY="194" width="128" height="178"/>
-        <element name="User" positionX="331" positionY="194" width="128" height="163"/>
+        <element name="User" positionX="315" positionY="155" width="128" height="238"/>
     </elements>
 </model>

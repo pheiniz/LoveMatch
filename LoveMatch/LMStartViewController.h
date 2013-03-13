@@ -10,8 +10,9 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "User.h"
 #import "Friend.h"
+#import "ATMHudDelegate.h"
 
-@interface LMStartViewController : UIViewController
+@interface LMStartViewController : UIViewController <ATMHudDelegate>
 - (void)sessionStateChanged:(FBSession *)session
                       state:(FBSessionState) state
                       error:(NSError *)error;

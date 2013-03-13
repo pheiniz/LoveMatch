@@ -10,6 +10,7 @@
 #import "LMLoginViewController.h"
 #import "LMRatingsTableViewController.h"
 #import "LMDataConnector.h"
+#import "UIViewController+MJPopupViewController.h"
 #import "ATMHud.h"
 
 
@@ -21,7 +22,6 @@
 
 @property (nonatomic, strong) ATMHud *hud;
 
-@property (nonatomic, strong) User *currentUser;
 @property (weak, nonatomic) IBOutlet UIButton *statsForUserButton;
 
 @property (nonatomic, strong)  NSString *friendsGender;
@@ -44,21 +44,21 @@
 {
     [super viewDidLoad];
     
-    _hud = [[ATMHud alloc] initWithDelegate:nil];
+    _hud = [[ATMHud alloc] initWithDelegate:self];
     [self.view addSubview:_hud.view];
     [_hud setFixedSize:CGSizeZero];
     
-    if ([[LMDataConnector sharedInstance] currentUser]){
-        [self.statsForUserButton setBackgroundImage:[UIImage imageWithData:[[[LMDataConnector sharedInstance] currentUser] pictureIcon]] forState:UIControlStateNormal];
+    if ([[LMDataConnector sharedInstance] getCurrentUser]){
+        [self.statsForUserButton setBackgroundImage:[UIImage imageWithData:[[[LMDataConnector sharedInstance] getCurrentUser] pictureIcon]] forState:UIControlStateNormal];
     }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if ([[LMDataConnector sharedInstance] currentUser]){
-        [self.statsForUserButton setBackgroundImage:[UIImage imageWithData:[[[LMDataConnector sharedInstance] currentUser] pictureIcon]] forState:UIControlStateNormal];
-    }
+//    if ([[LMDataConnector sharedInstance] getCurrentUser]){
+//        [self.statsForUserButton setBackgroundImage:[UIImage imageWithData:[[[LMDataConnector sharedInstance] getCurrentUser] pictureIcon]] forState:UIControlStateNormal];
+//    }
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 
     if (FBSession.activeSession.state == FBSessionStateOpen)
@@ -124,7 +124,7 @@
 
 
 - (void)calculationSuccessful {
-    [self.statsForUserButton setBackgroundImage:[UIImage imageWithData:[[[LMDataConnector sharedInstance] currentUser] pictureIcon]] forState:UIControlStateNormal];
+    [self.statsForUserButton setBackgroundImage:[UIImage imageWithData:[[[LMDataConnector sharedInstance] getCurrentUser] pictureIcon]] forState:UIControlStateNormal];
     [_hud setCaption:@"Your ratings are ready.\nEnjoy!"];
 	[_hud setActivity:NO];
 	[_hud setImage:[UIImage imageNamed:@"19-check"]];
@@ -166,6 +166,20 @@
 }
 
 - (IBAction)statsForUser:(id)sender {
+
+    User *currentUser = [[LMDataConnector sharedInstance] getCurrentUser];
+    [_hud setFixedSize:CGSizeMake(260, 300)];
+    int maleFriends = [[[LMDataConnector sharedInstance] getFriendsForGender:@"male"] count];
+    float malePercent = ((float)maleFriends / (float)currentUser.friends.count)*100.0;
+    int femaleFriends = [[[LMDataConnector sharedInstance] getFriendsForGender:@"female"] count];
+    float femalePercent = ((float)femaleFriends / (float)currentUser.friends.count)*100.0;
+    int transFriends = currentUser.friends.count - femaleFriends - maleFriends;
+    float transPercent = ((float)transFriends / (float)currentUser.friends.count)*100.0;
+    NSString *userInformation = [NSString stringWithFormat: @"Hi %@\nwe see you have %i friends\n%i are female (%.f%%)\n%i are male (%.f%%) and\n%i of your friends are somewhat uncertain about their gender (%.f%%)\n\n All in all, we found\n%i direct messages between you and your friends\n and you were liked %i times.\nYou tagged your friends %i times on your pictures while\nyour friends tagged you %i times on theirs.",currentUser.firstName, currentUser.friends.count, femaleFriends, femalePercent, maleFriends, malePercent, transFriends, transPercent, currentUser.numberDirectMessages.intValue, currentUser.numberLikesOnStatus.intValue, currentUser.numberOfTagedFriends.intValue, currentUser.numberOfTagedOnFriendsPictures.intValue];
+    [_hud setCaption:userInformation];
+	[_hud setActivity:NO];
+	[_hud show];
+    [_hud setFixedSize:CGSizeZero];
     
 }
 
@@ -226,6 +240,12 @@
         LMLoginViewController *loginViewController = [segue destinationViewController];
         [loginViewController setStartViewController:self];
     }
+}
+
+#pragma mark -
+#pragma mark ATMHudDelegate
+- (void)userDidTapHud:(ATMHud *)hud {
+	[hud hide];
 }
 
 @end

@@ -44,7 +44,7 @@ static LMDataConnector *sharedInstance = nil;
     self = [super init];
     
     if (self) {
-
+//        [self getCurrentUser];
     }
     
     return self;
@@ -65,14 +65,26 @@ static LMDataConnector *sharedInstance = nil;
     [self getUserData];
 }
 
-- (void)getUserData
+- (User *)getCurrentUser
 {
+    if (self.currentUser)
+        return self.currentUser;
+    
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
     [request setEntity:entity];
     NSArray *resultArray = [self.managedObjectContext executeFetchRequest:request error:nil];
-    
-    if (FBSession.activeSession.isOpen && [resultArray count] == 0 ) {
+    if ([resultArray count] != 0)
+    {
+    [self setCurrentUser:[resultArray objectAtIndex:0]];
+        return self.currentUser;
+    }
+    return nil;
+}
+
+- (void)getUserData
+{
+    if (FBSession.activeSession.isOpen && !self.currentUser) {// && [resultArray count] == 0 ) {
         
         // set hud and block the view as long as data is loading
         [self.startViewController startHud];
@@ -107,10 +119,7 @@ static LMDataConnector *sharedInstance = nil;
                  
              }
          }];
-    }else{
-        [self setCurrentUser:[resultArray objectAtIndex:0]];
     }    
-    
 }
 
 - (void)startCalculationForAllFriends{
@@ -159,19 +168,20 @@ static LMDataConnector *sharedInstance = nil;
         
         if ([jsonpart isEqualToString:@"users_family"]) {
             NSLog(@"Family Members: %d", [userIDArray count]);
+            [self.currentUser setNumberFamilyMembers:[NSNumber numberWithInt:[userIDArray count]]];
             
             [self filterForFamilyMembers:userIDArray];
         }
         
         if ([jsonpart isEqualToString:@"direct_messages"]) {
             NSLog(@"Direct Messages: %d", [userIDArray count]);
-            
+            [self.currentUser setNumberDirectMessages:[NSNumber numberWithInt:[userIDArray count]]];
             [self calculateRatingFor:userIDArray withWeight:3];
         }
         
         if ([jsonpart isEqualToString:@"likes_on_user_status"]) {
             NSLog(@"Likes on user status: %d", [userIDArray count]);
-            
+            [self.currentUser setNumberLikesOnStatus:[NSNumber numberWithInt:[userIDArray count]]];
             [self calculateRatingFor:userIDArray withWeight:2];
         }
         
@@ -184,13 +194,14 @@ static LMDataConnector *sharedInstance = nil;
         if ([jsonpart isEqualToString:@"user_link_on_friends_pictures"]) {
             NSLog(@"Tags for user on pictures posted by friends: %d", [userIDArray count]);
             
+            [self.currentUser setNumberOfTagedOnFriendsPictures:[NSNumber numberWithInt:[userIDArray count]]];
             //TODO dynamische anpassung
             [self calculateRatingFor:userIDArray withWeight:3];
         }
         
         if ([jsonpart isEqualToString:@"linked_friends_on_own_pictures"]) {
             NSLog(@"Friends taged on users pictures: %d", [userIDArray count]);
-            
+            [self.currentUser setNumberOfTagedFriends:[NSNumber numberWithInt:[userIDArray count]]];
             [self calculateRatingFor:userIDArray withWeight:5];
         }
     }
@@ -329,6 +340,8 @@ static LMDataConnector *sharedInstance = nil;
         NSLog(@"Unresolved error %@, %@ while deleting and adding new database.", error, [error userInfo]);
         abort();
     }
+    
+    self.currentUser = nil;
 }
 
 /**
