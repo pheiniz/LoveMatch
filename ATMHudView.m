@@ -110,7 +110,6 @@
 		targetBounds = CGRectMake(0, 0, p.margin*2+activitySize.width, p.margin*2+activitySize.height);
 	} else {
 		BOOL hasFixedSize = NO;
-		CGSize captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(160, 200) lineBreakMode:UILineBreakModeWordWrap];
 		CGSize captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(160, 250) lineBreakMode:UILineBreakModeWordWrap];
 		
 		if (fixedSize.width > 0 & fixedSize.height > 0) {
@@ -119,7 +118,6 @@
 				s.width = progressRect.size.width+p.margin*2;
 			}
 			hasFixedSize = YES;
-			captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(s.width-p.margin*2, 200) lineBreakMode:UILineBreakModeWordWrap];
 			captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(s.width-p.margin*2, 250) lineBreakMode:UILineBreakModeWordWrap];
 			targetBounds = CGRectMake(0, 0, s.width, s.height);
 		}
