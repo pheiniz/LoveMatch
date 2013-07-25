@@ -10,7 +10,6 @@
 #import "LMLoginViewController.h"
 #import "LMRatingsTableViewController.h"
 #import "LMDataConnector.h"
-#import "UIViewController+MJPopupViewController.h"
 #import "ATMHud.h"
 
 
@@ -28,8 +27,11 @@
 
 
 - (IBAction)startFBSearchForFemale:(id)sender;
+@property (weak, nonatomic) IBOutlet UIButton *femaleButton;
 - (IBAction)startFBSearchForMale:(id)sender;
+@property (weak, nonatomic) IBOutlet UIButton *maleButton;
 - (IBAction)startFBSearchForAll:(id)sender;
+@property (weak, nonatomic) IBOutlet UIButton *allGenderButton;
 - (IBAction)statsForUser:(id)sender;
 - (IBAction)logout:(id)sender;
 
@@ -51,6 +53,10 @@
     if ([[LMDataConnector sharedInstance] getCurrentUser]){
         [self.statsForUserButton setBackgroundImage:[UIImage imageWithData:[[[LMDataConnector sharedInstance] getCurrentUser] pictureIcon]] forState:UIControlStateNormal];
     }
+    
+    [self.maleButton.layer setBorderWidth:1];
+    [self.femaleButton.layer setBorderWidth:1];
+    [self.allGenderButton.layer setBorderWidth:1];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -216,6 +222,7 @@
     
     [ratingTableViewController setFriends:[NSMutableArray arrayWithArray:[[LMDataConnector sharedInstance] getFriendsForGender:self.friendsGender]]];
     [ratingTableViewController.tableView reloadData];
+    //[ratingTableViewController.tableView sizeToFit];
     [ratingTableViewController changeGenderTo:self.friendsGender];
     
     [self dismissViewControllerAnimated:YES completion:nil];

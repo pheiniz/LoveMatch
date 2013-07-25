@@ -2,7 +2,7 @@
 //  User.m
 //  LoveMatch
 //
-//  Created by Paul Heiniz on 19.02.13.
+//  Created by Paul Heiniz on 24/07/2013.
 //  Copyright (c) 2013 nerdburgers. All rights reserved.
 //
 
@@ -16,14 +16,15 @@
 @dynamic gender;
 @dynamic interestedIn;
 @dynamic lastName;
+@dynamic numberDirectMessages;
+@dynamic numberFamilyMembers;
+@dynamic numberLikesOnStatus;
+@dynamic numberOfCommentsOnStatus;
+@dynamic numberOfTagedFriends;
+@dynamic numberOfTagedOnFriendsPictures;
 @dynamic pictureIcon;
 @dynamic pictureURL;
 @dynamic uid;
-@dynamic numberLikesOnStatus;
-@dynamic numberDirectMessages;
-@dynamic numberFamilyMembers;
-@dynamic numberOfTagedFriends;
-@dynamic numberOfTagedOnFriendsPictures;
 @dynamic friends;
 
 @end

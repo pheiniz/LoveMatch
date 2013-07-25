@@ -11,8 +11,8 @@
 #import "LMFriendCell.h"
 #import "Friend.h"
 #import "UIImageView+AFNetworking.h"
-#import "UITableView+ExtendedAnimations.h"
 #import "LMDataConnector.h"
+#import "SVModalWebViewController.h"
 
 @interface LMRatingsTableViewController : UITableViewController
 

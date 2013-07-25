@@ -108,7 +108,15 @@ static LMDataConnector *sharedInstance = nil;
                  
                  [tempUser setPictureURL:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture", [tempUser uid]]];
                  
-                 [tempUser setPictureIcon:[NSData dataWithContentsOfURL:[NSURL URLWithString:[tempUser.pictureURL stringByAppendingString:@"?width=65&height=65"]]]];
+                 if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
+                     ([UIScreen mainScreen].scale == 2.0)) {
+                     //retina
+                     [tempUser setPictureIcon:[NSData dataWithContentsOfURL:[NSURL URLWithString:[tempUser.pictureURL stringByAppendingString:@"?width=200&height=200"]]]];
+                 } else {
+                     //non-retina
+                     [tempUser setPictureIcon:[NSData dataWithContentsOfURL:[NSURL URLWithString:[tempUser.pictureURL stringByAppendingString:@"?width=100&height=100"]]]];
+                 }
+                 
                  
                  [self saveContext];
                  
@@ -122,6 +130,7 @@ static LMDataConnector *sharedInstance = nil;
     }    
 }
 
+//get all data from FB
 - (void)startCalculationForAllFriends{
     NSLog(@"Start calculating ...");
     NSString *query = [NSString stringWithFormat:
@@ -133,6 +142,7 @@ static LMDataConnector *sharedInstance = nil;
                        @"'direct_messages':'SELECT author_id FROM message WHERE thread_id IN (SELECT thread_id FROM thread WHERE folder_id = 0) AND author_id IN (SELECT uid FROM #all_friends)',"
                        @"'user_link_on_friends_pictures':'SELECT owner FROM photo WHERE owner != me() AND object_id IN(SELECT object_id FROM photo_tag WHERE subject = me())',"
                        @"'linked_friends_on_own_pictures':'SELECT subject FROM photo_tag WHERE subject != me() AND object_id IN(SELECT object_id FROM photo WHERE owner = me())',"
+                       @"'comment_on_user_status':'SELECT fromid FROM comment WHERE object_id IN (SELECT status_id FROM status WHERE uid=me()) AND fromid != me()',"
                        @"}"];
     
     // Set up the query parameter
@@ -202,7 +212,13 @@ static LMDataConnector *sharedInstance = nil;
         if ([jsonpart isEqualToString:@"linked_friends_on_own_pictures"]) {
             NSLog(@"Friends taged on users pictures: %d", [userIDArray count]);
             [self.currentUser setNumberOfTagedFriends:[NSNumber numberWithInt:[userIDArray count]]];
-            [self calculateRatingFor:userIDArray withWeight:5];
+            [self calculateRatingFor:userIDArray withWeight:4];
+        }
+        
+        if ([jsonpart isEqualToString:@"comment_on_user_status"]) {
+            NSLog(@"Friends comments on users status: %d", [userIDArray count]);
+            [self.currentUser setNumberOfCommentsOnStatus:[NSNumber numberWithInt:[userIDArray count]]];
+            [self calculateRatingFor:userIDArray withWeight:3];
         }
     }
 

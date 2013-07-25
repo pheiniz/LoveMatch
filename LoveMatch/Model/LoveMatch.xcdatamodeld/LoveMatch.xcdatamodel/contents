@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C60" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2057" systemVersion="12C3012" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Friend" representedClassName="Friend" syncable="YES">
         <attribute name="firstName" attributeType="String" syncable="YES"/>
         <attribute name="gender" attributeType="String" syncable="YES"/>
@@ -21,6 +21,7 @@
         <attribute name="numberDirectMessages" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="numberFamilyMembers" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="numberLikesOnStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberOfCommentsOnStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfTagedFriends" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfTagedOnFriendsPictures" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="pictureIcon" optional="YES" attributeType="Binary" syncable="YES"/>
@@ -31,6 +32,6 @@
     </entity>
     <elements>
         <element name="Friend" positionX="504" positionY="194" width="128" height="178"/>
-        <element name="User" positionX="315" positionY="155" width="128" height="238"/>
+        <element name="User" positionX="315" positionY="155" width="128" height="255"/>
     </elements>
 </model>

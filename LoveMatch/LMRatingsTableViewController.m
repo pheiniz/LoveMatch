@@ -18,7 +18,7 @@
 
 @implementation LMRatingsTableViewController
 
-static int startButtonHeight = 50;
+static int startButtonHeight = 35;
 static int startButtonWidth = 50;
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -34,19 +34,32 @@ static int startButtonWidth = 50;
 {
     [super viewDidLoad];
     
-    UIImageView *boxBackView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background.png"]];
-    [self.tableView setBackgroundView:boxBackView];
-
+    //Background image
+    //UIImageView *boxBackView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"silver_background.jpg"]];
+    //[self.tableView setBackgroundView:boxBackView];
+    
+    //Background color
+    //[self.tableView setBackgroundView:nil];
+    //[self.tableView setBackgroundView:[[[UIView alloc] init] autorelease]];
+    //[self.tableView setBackgroundColor:UIColor.clearColor];
+    
     _startViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - startButtonWidth - 10,self.view.frame.size.height - startButtonHeight,startButtonWidth ,startButtonHeight)];
     
     // Configure your view here.
-    _startViewButton.backgroundColor = [UIColor colorWithRed:0.0 green:0.7 blue:0.8 alpha:0.75];
+//    _startViewButton.backgroundColor = [UIColor colorWithRed:0.0 green:0.7 blue:0.8 alpha:0.75];
+    [_startViewButton setImage:[UIImage imageNamed:@"up"] forState:UIControlStateNormal];
     [_startViewButton addTarget:self
                                 action:@selector(presentStartView)
                       forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:_startViewButton];
 
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -58,6 +71,7 @@ static int startButtonWidth = 50;
         LMStartViewController *startViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"StartView"];
         [self presentViewController:startViewController animated:NO completion:nil];
     }
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -110,24 +124,52 @@ static int startButtonWidth = 50;
     
     [cell.positionLabel setText:[NSString stringWithFormat:@"%i", position + 1]];
     if (position == 0){
-        [cell.positionImageView setImage:[UIImage imageNamed:@"circle_golden"]];
+        //[cell.positionImageView setImage:[UIImage imageNamed:@"circle_golden"]];
+        [cell.positionImageView setBackgroundColor:[UIColor colorWithRed:210.0/255.0 green:210.0/255.0 blue:210.0/255.0 alpha:1]];
+        [cell.positionImageView.layer setCornerRadius:20];
+        [cell.positionImageView.layer setBorderWidth:3];
     }else{
-        [cell.positionImageView setImage:[UIImage imageNamed:@"circle_blue"]];
+        //[cell.positionImageView setImage:[UIImage imageNamed:@"circle_blue"]];
+        [cell.positionImageView setBackgroundColor:[UIColor colorWithRed:210.0/255.0 green:210.0/255.0 blue:210.0/255.0 alpha:1]];
+        [cell.positionImageView.layer setCornerRadius:20];
+        [cell.positionImageView.layer setBorderWidth:3];
     }
     
     [cell.nameLabel setText:[NSString stringWithFormat:@"%@ %@", friend.firstName, friend.lastName]];
     [cell.ratingsLabel setText:[NSString stringWithFormat:@"%@", friend.rating]];
     
-    if (![friend.relationshipStatus isEqualToString:@"Single"]){
-        cell.relationshipIcon.hidden = NO;
-    }else{
-        cell.relationshipIcon.hidden = YES;
-    }
-    [cell.pictureImageView setImageWithURL:[NSURL URLWithString:friend.pictureURL]];
-    [cell.cellBackground setBackgroundColor: [UIColor colorWithRed:(255.0 - friend.rating.floatValue)/255.0 green:friend.rating.floatValue/255.0 blue:0.0/255.0 alpha:1.0]];
-    //[cell.cellBackground setBackgroundColor: [UIColor colorWithRed:(float)indexPath.row/255.0 green:(float)(255-indexPath.row)/255.0 blue:0.0/255.0 alpha:1.0]];
-    [[cell.cellBackground layer] setBorderWidth:3];
+    cell.relationshipLabel.text = friend.relationshipStatus;
     
+    if ([friend.relationshipStatus isEqualToString:@"Single"]||[friend.relationshipStatus isEqualToString:@"In an open Relationship"]||[friend.relationshipStatus isEqualToString:@"In an open Relationship"]){
+        //supergreen, ok to date
+        cell.relationshipLabel.textColor = [UIColor colorWithRed:78.0/255.0 green:102.0/255.0 blue:25.0/255.0 alpha:1];
+    
+    }else if ([friend.relationshipStatus isEqualToString:@"It's complicated"]||[friend.relationshipStatus isEqualToString:@"In an open Relationship"]){
+        //blue, uncertain
+        cell.relationshipLabel.textColor = [UIColor colorWithRed:2.0/255.0 green:127.0/255.0 blue:191.0/255.0 alpha:1];
+    
+    }else if ([friend.relationshipStatus isEqualToString:@"In a Relationship"]){
+        //lightred, attention
+        cell.relationshipLabel.textColor = [UIColor colorWithRed:217.0/255.0 green:48.0/255.0 blue:48.0/255.0 alpha:1];
+
+    }else if ([friend.relationshipStatus isEqualToString:@"Engaged"]){
+        //red, complicated
+        cell.relationshipLabel.textColor = [UIColor colorWithRed:153.0/255.0 green:34.0/255.0 blue:34.0/255.0 alpha:1];
+    
+    }else if ([friend.relationshipStatus isEqualToString:@"Married"]||[friend.relationshipStatus isEqualToString:@"In a domestic partnership"]||[friend.relationshipStatus isEqualToString:@"In a civil partnership"]||[friend.relationshipStatus isEqualToString:@"In a civil union"]){
+        //darkred, nogo
+        cell.relationshipLabel.textColor = [UIColor colorWithRed:115.0/255.0 green:7.0/255.0 blue:16.0/255.0 alpha:1];
+    }
+    
+    [cell.pictureImageView setImageWithURL:[NSURL URLWithString:friend.pictureURL]];
+    
+    [cell.pictureImageView.layer setCornerRadius:6];
+    [cell.pictureBackground.layer setCornerRadius:6];
+    //[cell.cellBackground setBackgroundColor: [UIColor colorWithRed:(255.0 - friend.rating.floatValue)/255.0 green:friend.rating.floatValue/255.0 blue:0.0/255.0 alpha:1]];
+    
+    //[cell.cellBackground setBackgroundColor: [UIColor colorWithRed:217.0/255.0 green:201.0/255.0 blue:154.0/255.0 alpha:1]];
+    [[cell.cellBackground layer] setBorderColor:[[UIColor blackColor] CGColor]];
+    [[cell.cellBackground layer] setBorderWidth:3];
     
     
     
@@ -200,13 +242,11 @@ static int startButtonWidth = 50;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    NSString *url = [NSString stringWithFormat:@"http://www.facebook.com/profile.php?id=%@", (Friend *)[[_friends objectAtIndex:indexPath.row] uid]];
+    SVModalWebViewController *webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
+    [webViewController setBarsTintColor:[UIColor darkGrayColor]];
+    [self presentViewController:webViewController animated:YES completion:nil];
+
 }
 
 - (IBAction)test:(id)sender {
