@@ -44,7 +44,6 @@ static LMDataConnector *sharedInstance = nil;
     self = [super init];
     
     if (self) {
-//        [self getCurrentUser];
     }
     
     return self;
@@ -84,7 +83,7 @@ static LMDataConnector *sharedInstance = nil;
 
 - (void)getUserData
 {
-    if (FBSession.activeSession.isOpen && !self.currentUser) {// && [resultArray count] == 0 ) {
+    if (FBSession.activeSession.isOpen && !self.currentUser) {
         
         // set hud and block the view as long as data is loading
         [self.startViewController startHud];
@@ -111,10 +110,10 @@ static LMDataConnector *sharedInstance = nil;
                  if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
                      ([UIScreen mainScreen].scale == 2.0)) {
                      //retina
-                     [tempUser setPictureIcon:[NSData dataWithContentsOfURL:[NSURL URLWithString:[tempUser.pictureURL stringByAppendingString:@"?width=200&height=200"]]]];
+                     [tempUser setPictureIcon:[NSData dataWithContentsOfURL:[NSURL URLWithString:[tempUser.pictureURL stringByAppendingString:@"?width=500&height=170"]]]];
                  } else {
                      //non-retina
-                     [tempUser setPictureIcon:[NSData dataWithContentsOfURL:[NSURL URLWithString:[tempUser.pictureURL stringByAppendingString:@"?width=100&height=100"]]]];
+                     [tempUser setPictureIcon:[NSData dataWithContentsOfURL:[NSURL URLWithString:[tempUser.pictureURL stringByAppendingString:@"?width=250&height=85"]]]];
                  }
                  
                  

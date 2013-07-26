@@ -19,7 +19,7 @@
 @implementation LMRatingsTableViewController
 
 static int startButtonHeight = 35;
-static int startButtonWidth = 50;
+static int startButtonWidth = 71;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -34,19 +34,9 @@ static int startButtonWidth = 50;
 {
     [super viewDidLoad];
     
-    //Background image
-    //UIImageView *boxBackView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"silver_background.jpg"]];
-    //[self.tableView setBackgroundView:boxBackView];
-    
-    //Background color
-    //[self.tableView setBackgroundView:nil];
-    //[self.tableView setBackgroundView:[[[UIView alloc] init] autorelease]];
-    //[self.tableView setBackgroundColor:UIColor.clearColor];
-    
-    _startViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - startButtonWidth - 10,self.view.frame.size.height - startButtonHeight,startButtonWidth ,startButtonHeight)];
+    _startViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - startButtonWidth,self.view.frame.size.height - startButtonHeight,startButtonWidth ,startButtonHeight)];
     
     // Configure your view here.
-//    _startViewButton.backgroundColor = [UIColor colorWithRed:0.0 green:0.7 blue:0.8 alpha:0.75];
     [_startViewButton setImage:[UIImage imageNamed:@"up"] forState:UIControlStateNormal];
     [_startViewButton addTarget:self
                                 action:@selector(presentStartView)
@@ -83,7 +73,7 @@ static int startButtonWidth = 50;
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     CGRect newFrame = _startViewButton.frame;
-    newFrame.origin.x = self.view.frame.size.width - startButtonWidth - 10;
+    newFrame.origin.x = self.view.frame.size.width - startButtonWidth;
     newFrame.origin.y = self.tableView.contentOffset.y+(self.tableView.frame.size.height-startButtonHeight);
     _startViewButton.frame = newFrame;
 }
@@ -165,9 +155,7 @@ static int startButtonWidth = 50;
     
     [cell.pictureImageView.layer setCornerRadius:6];
     [cell.pictureBackground.layer setCornerRadius:6];
-    //[cell.cellBackground setBackgroundColor: [UIColor colorWithRed:(255.0 - friend.rating.floatValue)/255.0 green:friend.rating.floatValue/255.0 blue:0.0/255.0 alpha:1]];
-    
-    //[cell.cellBackground setBackgroundColor: [UIColor colorWithRed:217.0/255.0 green:201.0/255.0 blue:154.0/255.0 alpha:1]];
+
     [[cell.cellBackground layer] setBorderColor:[[UIColor blackColor] CGColor]];
     [[cell.cellBackground layer] setBorderWidth:3];
     
@@ -175,34 +163,6 @@ static int startButtonWidth = 50;
     
     return cell;
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-//// Override to support rearranging the table view.
-//- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-//{
-//}
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -219,22 +179,6 @@ static int startButtonWidth = 50;
 	Friend *friendToMove = [self.friends objectAtIndex:fromIndexPath.row];
 	[_friends removeObjectAtIndex:fromIndexPath.row];
 	[_friends insertObject:friendToMove atIndex:toIndexPath.row];
-}
-
-- (void)tableView:(UITableView *)tableView
-	 exchangeCell:(UITableViewCell *)cell1 atIndexPath:(NSIndexPath *)indexPath1
-		 withCell:(UITableViewCell *)cell2 atIndexPath:(NSIndexPath *)indexPath2 {
-//	NSMutableArray *sectionArray1 = [self.sections objectAtIndex:indexPath1.section];
-//	NSMutableArray *sectionArray2 = [self.sections objectAtIndex:indexPath2.section];
-//	
-//	Friend *string1 = [[[sectionArray1 objectAtIndex:indexPath1.row] retain] autorelease];
-//	NSString *string2 = [[[sectionArray2 objectAtIndex:indexPath2.row] retain] autorelease];
-//	
-//	[sectionArray1 replaceObjectAtIndex:indexPath1.row withObject:string2];
-//	[sectionArray2 replaceObjectAtIndex:indexPath2.row withObject:string1];
-//	
-//	cell1.textLabel.text = string2;
-//	cell2.textLabel.text = string1;
 }
 
 

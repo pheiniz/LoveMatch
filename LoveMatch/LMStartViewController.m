@@ -51,7 +51,8 @@
     [_hud setFixedSize:CGSizeZero];
     
     if ([[LMDataConnector sharedInstance] getCurrentUser]){
-        [self.statsForUserButton setBackgroundImage:[UIImage imageWithData:[[[LMDataConnector sharedInstance] getCurrentUser] pictureIcon]] forState:UIControlStateNormal];
+        UIImage *userPhoto = [UIImage imageWithData:[[[LMDataConnector sharedInstance] getCurrentUser] pictureIcon]];	
+        [self.statsForUserButton setBackgroundImage:userPhoto forState:UIControlStateNormal];
     }
     
     [self.maleButton.layer setBorderWidth:1];
@@ -62,9 +63,6 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-//    if ([[LMDataConnector sharedInstance] getCurrentUser]){
-//        [self.statsForUserButton setBackgroundImage:[UIImage imageWithData:[[[LMDataConnector sharedInstance] getCurrentUser] pictureIcon]] forState:UIControlStateNormal];
-//    }
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 
     if (FBSession.activeSession.state == FBSessionStateOpen)
@@ -108,8 +106,6 @@
             //[self dismissViewControllerAnimated:YES completion:nil];
             
             [FBSession.activeSession closeAndClearTokenInformation];
-            
-            //[self showLoginView];
             break;
         default:
             break;
@@ -181,7 +177,7 @@
     float femalePercent = ((float)femaleFriends / (float)currentUser.friends.count)*100.0;
     int transFriends = currentUser.friends.count - femaleFriends - maleFriends;
     float transPercent = ((float)transFriends / (float)currentUser.friends.count)*100.0;
-    NSString *userInformation = [NSString stringWithFormat: @"Hi %@\nwe see you have %i friends\n%i are female (%.f%%)\n%i are male (%.f%%) and\n%i of your friends are somewhat uncertain about their gender (%.f%%)\n\n All in all, we found\n%i direct messages between you and your friends\n and you were liked %i times.\nYou tagged your friends %i times on your pictures while\nyour friends tagged you %i times on theirs.",currentUser.firstName, currentUser.friends.count, femaleFriends, femalePercent, maleFriends, malePercent, transFriends, transPercent, currentUser.numberDirectMessages.intValue, currentUser.numberLikesOnStatus.intValue, currentUser.numberOfTagedFriends.intValue, currentUser.numberOfTagedOnFriendsPictures.intValue];
+    NSString *userInformation = [NSString stringWithFormat: @"Hi %@\nwe see you have %i friends\n%i are female (%.f%%)\n%i are male (%.f%%) and\n%i of your friends are somewhat uncertain about their gender (%.f%%)\n\n We found\n%i direct messages between you and your friends\n and you were liked %i times.\nYou tagged your friends %i times on your pictures while\nyour friends tagged you %i times on theirs.",currentUser.firstName, currentUser.friends.count, femaleFriends, femalePercent, maleFriends, malePercent, transFriends, transPercent, currentUser.numberDirectMessages.intValue, currentUser.numberLikesOnStatus.intValue, currentUser.numberOfTagedFriends.intValue, currentUser.numberOfTagedOnFriendsPictures.intValue];
     [_hud setCaption:userInformation];
 	[_hud setActivity:NO];
 	[_hud show];
